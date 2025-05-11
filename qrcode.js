@@ -11,17 +11,15 @@
 var QRCode;
 
 (function (root, factory) {
-
-    /* CommonJS */
-  if (typeof exports == 'object') module.exports = factory()
-
-  /* AMD module */
-  else if (typeof define == 'function' && define.amd) define(factory)
-
-  /* Global */
-  else root.QRCode = factory()
-
-}(this, function () {   //---------------------------------------------------------------------
+  // CommonJS
+  if (typeof exports == "object") module.exports = factory();
+  // AMD module
+  else if (typeof define == "function" && define.amd)
+    define(factory);
+  // Global
+  else root.QRCode = factory();
+})(this, function () {
+  //---------------------------------------------------------------------
   // QRCode for JavaScript
   //
   // Copyright (c) 2009 Kazuhiko Arase
@@ -1117,7 +1115,8 @@ var QRCode;
     return Drawing;
   })();
 
-  var useSVG = global.document && document.documentElement.tagName.toLowerCase() === "svg";
+  var useSVG =
+    global.document && document.documentElement.tagName.toLowerCase() === "svg";
 
   // Drawing in DOM by using Table tag
   var Drawing = useSVG
@@ -1314,18 +1313,20 @@ var QRCode;
             */
             var antialiasing = nWidth == nRoundedWidth ? false : true;
 
-
-            var offset={x:_htOption.borderWidth,y:_htOption.borderWidth};
+            var offset = { x: _htOption.borderWidth, y: _htOption.borderWidth };
 
             /**
              * automatic alignment
              */
-            if (_htOption.autoAlignment){
-                antialiasing=false;
-                nWidth= Math.floor(_htOption.width / nCount);
-                nHeight = Math.floor(_htOption.height / nCount);
-                offset.x=(_htOption.width- nCount*nWidth)/2+_htOption.borderWidth;
-                offset.y=(_htOption.height- nCount*nHeight)/2+_htOption.borderWidth;
+            if (_htOption.autoAlignment) {
+              antialiasing = false;
+              nWidth = Math.floor(_htOption.width / nCount);
+              nHeight = Math.floor(_htOption.height / nCount);
+              offset.x =
+                (_htOption.width - nCount * nWidth) / 2 + _htOption.borderWidth;
+              offset.y =
+                (_htOption.height - nCount * nHeight) / 2 +
+                _htOption.borderWidth;
             }
 
             _elImage.style.display = "none";
@@ -1334,8 +1335,8 @@ var QRCode;
             for (var row = 0; row < nCount; row++) {
               for (var col = 0; col < nCount; col++) {
                 var bIsDark = oQRCode.isDark(row, col);
-                var nLeft = offset.x +col * nWidth;
-                var nTop = offset.y +row * nHeight;
+                var nLeft = offset.x + col * nWidth;
+                var nTop = offset.y + row * nHeight;
                 _oContext.strokeStyle = bIsDark
                   ? _htOption.colorDark
                   : _htOption.colorLight;
@@ -1345,22 +1346,22 @@ var QRCode;
                   : _htOption.colorLight;
                 _oContext.fillRect(nLeft, nTop, nWidth, nHeight);
 
-                if (antialiasing){
-                    // 안티 앨리어싱 방지 처리
-                    // Anti-aliasing treatment
-                    _oContext.strokeRect(
-                      Math.floor(nLeft) + 0.5,
-                      Math.floor(nTop) + 0.5,
-                      nRoundedWidth,
-                      nRoundedHeight,
-                    );
+                if (antialiasing) {
+                  // 안티 앨리어싱 방지 처리
+                  // Anti-aliasing treatment
+                  _oContext.strokeRect(
+                    Math.floor(nLeft) + 0.5,
+                    Math.floor(nTop) + 0.5,
+                    nRoundedWidth,
+                    nRoundedHeight,
+                  );
 
-                    _oContext.strokeRect(
-                      Math.ceil(nLeft) - 0.5,
-                      Math.ceil(nTop) - 0.5,
-                      nRoundedWidth,
-                      nRoundedHeight,
-                    );
+                  _oContext.strokeRect(
+                    Math.ceil(nLeft) - 0.5,
+                    Math.ceil(nTop) - 0.5,
+                    nRoundedWidth,
+                    nRoundedHeight,
+                  );
                 }
               }
             }
@@ -1489,8 +1490,8 @@ var QRCode;
    * @param {String} [vOption.colorDark="#000000"]
    * @param {String} [vOption.colorLight="#ffffff"]
    * @param {QRCode.CorrectLevel} [vOption.correctLevel=QRCode.CorrectLevel.H] [L|M|Q|H]
-     * @param {Number} [vOption.borderWidth=0] border width of QRCode
-     * @param {Boolean} [vOption.autoAlignment=false] auto alignment of pixel
+   * @param {Number} [vOption.borderWidth=0] border width of QRCode
+   * @param {Boolean} [vOption.autoAlignment=false] auto alignment of pixel
    */
   QRCode = function (el, vOption) {
     this._htOption = {
@@ -1500,8 +1501,8 @@ var QRCode;
       colorDark: "#000000",
       colorLight: "#ffffff",
       correctLevel: QRErrorCorrectLevel.H,
-            borderWidth : 0,
-            autoAlignment:false,
+      borderWidth: 0,
+      autoAlignment: false,
     };
 
     if (typeof vOption === "string") {
@@ -1581,6 +1582,5 @@ var QRCode;
    */
   QRCode.CorrectLevel = QRErrorCorrectLevel;
 
-    return QRCode;
-
-}));
+  return QRCode;
+});
