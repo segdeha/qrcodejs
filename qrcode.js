@@ -10,8 +10,18 @@
  */
 var QRCode;
 
-(function () {
-  //---------------------------------------------------------------------
+(function (root, factory) {
+
+    /* CommonJS */
+  if (typeof exports == 'object') module.exports = factory()
+
+  /* AMD module */
+  else if (typeof define == 'function' && define.amd) define(factory)
+
+  /* Global */
+  else root.QRCode = factory()
+
+}(this, function () {   //---------------------------------------------------------------------
   // QRCode for JavaScript
   //
   // Copyright (c) 2009 Kazuhiko Arase
@@ -1266,8 +1276,8 @@ var QRCode;
 
             this._htOption = htOption;
             this._elCanvas = document.createElement("canvas");
-            this._elCanvas.width = htOption.width;
-            this._elCanvas.height = htOption.height;
+            this._elCanvas.width = htOption.width + htOption.borderWidth * 2;
+            this._elCanvas.height = htOption.height + htOption.borderWidth * 2;
             el.appendChild(this._elCanvas);
             this._el = el;
             this._oContext = this._elCanvas.getContext("2d");
@@ -1295,37 +1305,59 @@ var QRCode;
             var nRoundedWidth = Math.round(nWidth);
             var nRoundedHeight = Math.round(nHeight);
 
+            /**
+               If the data block corresponds exactly to the pixel, there is no need to turn on anti aliasing
+            */
+            var antialiasing = nWidth == nRoundedWidth ? false : true;
+
+
+            var offset={x:_htOption.borderWidth,y:_htOption.borderWidth};
+
+            /**
+             * automatic alignment
+             */
+            if (_htOption.autoAlignment){
+                antialiasing=false;
+                nWidth= Math.floor(_htOption.width / nCount);
+                nHeight = Math.floor(_htOption.height / nCount);
+                offset.x=(_htOption.width- nCount*nWidth)/2+_htOption.borderWidth;
+                offset.y=(_htOption.height- nCount*nHeight)/2+_htOption.borderWidth;
+            }
+
             _elImage.style.display = "none";
             this.clear();
 
             for (var row = 0; row < nCount; row++) {
               for (var col = 0; col < nCount; col++) {
                 var bIsDark = oQRCode.isDark(row, col);
-                var nLeft = col * nWidth;
-                var nTop = row * nHeight;
+                var nLeft = offset.x +col * nWidth;
+                var nTop = offset.y +row * nHeight;
                 _oContext.strokeStyle = bIsDark
                   ? _htOption.colorDark
                   : _htOption.colorLight;
-                _oContext.lineWidth = 1;
+                _oContext.lineWidth = 0;
                 _oContext.fillStyle = bIsDark
                   ? _htOption.colorDark
                   : _htOption.colorLight;
                 _oContext.fillRect(nLeft, nTop, nWidth, nHeight);
 
-                // 안티 앨리어싱 방지 처리
-                _oContext.strokeRect(
-                  Math.floor(nLeft) + 0.5,
-                  Math.floor(nTop) + 0.5,
-                  nRoundedWidth,
-                  nRoundedHeight,
-                );
+                if (antialiasing){
+                    // 안티 앨리어싱 방지 처리
+                    // Anti-aliasing treatment
+                    _oContext.strokeRect(
+                      Math.floor(nLeft) + 0.5,
+                      Math.floor(nTop) + 0.5,
+                      nRoundedWidth,
+                      nRoundedHeight,
+                    );
 
-                _oContext.strokeRect(
-                  Math.ceil(nLeft) - 0.5,
-                  Math.ceil(nTop) - 0.5,
-                  nRoundedWidth,
-                  nRoundedHeight,
-                );
+                    _oContext.strokeRect(
+                      Math.ceil(nLeft) - 0.5,
+                      Math.ceil(nTop) - 0.5,
+                      nRoundedWidth,
+                      nRoundedHeight,
+                    );
+                }
               }
             }
 
@@ -1453,6 +1485,8 @@ var QRCode;
    * @param {String} [vOption.colorDark="#000000"]
    * @param {String} [vOption.colorLight="#ffffff"]
    * @param {QRCode.CorrectLevel} [vOption.correctLevel=QRCode.CorrectLevel.H] [L|M|Q|H]
+     * @param {Number} [vOption.borderWidth=0] border width of QRCode
+     * @param {Boolean} [vOption.autoAlignment=false] auto alignment of pixel
    */
   QRCode = function (el, vOption) {
     this._htOption = {
@@ -1462,6 +1496,8 @@ var QRCode;
       colorDark: "#000000",
       colorLight: "#ffffff",
       correctLevel: QRErrorCorrectLevel.H,
+            borderWidth : 0,
+            autoAlignment:false,
     };
 
     if (typeof vOption === "string") {
@@ -1540,4 +1576,7 @@ var QRCode;
    * @name QRCode.CorrectLevel
    */
   QRCode.CorrectLevel = QRErrorCorrectLevel;
-})();
+
+    return QRCode;
+
+}));
