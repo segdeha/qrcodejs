@@ -41,21 +41,25 @@ var QRCode;
     this.data = data;
     this.parsedData = [];
 
+    // IE <= 11 doesn’t support codePointAt
+    var getCode = data.codePointAt || data.charCodeAt;
+
     // Added to support UTF-8 Characters
     for (var i = 0, l = this.data.length; i < l; i++) {
       var byteArray = [];
-      var code = this.data.charCodeAt(i);
+      var code = getCode.call(data, i);
 
-      if (code > 0x10000) {
+      if (code >= 0x10000) {
         byteArray[0] = 0xf0 | ((code & 0x1c0000) >>> 18);
         byteArray[1] = 0x80 | ((code & 0x3f000) >>> 12);
         byteArray[2] = 0x80 | ((code & 0xfc0) >>> 6);
         byteArray[3] = 0x80 | (code & 0x3f);
+        i++;
       } else if (code > 0x800) {
         byteArray[0] = 0xe0 | ((code & 0xf000) >>> 12);
         byteArray[1] = 0x80 | ((code & 0xfc0) >>> 6);
         byteArray[2] = 0x80 | (code & 0x3f);
-      } else if (code > 0x80) {
+      } else if (code >= 0x80) {
         byteArray[0] = 0xc0 | ((code & 0x7c0) >>> 6);
         byteArray[1] = 0x80 | (code & 0x3f);
       } else {
