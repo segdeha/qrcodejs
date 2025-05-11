@@ -1115,8 +1115,7 @@ var QRCode;
     return Drawing;
   })();
 
-  var useSVG =
-    global.document && document.documentElement.tagName.toLowerCase() === "svg";
+  var useSVG = document && document.documentElement.tagName.toLowerCase() === "svg";
 
   // Drawing in DOM by using Table tag
   var Drawing = useSVG
