@@ -17,7 +17,7 @@ var QRCode;
   else if (typeof define == "function" && define.amd)
     define(factory);
   // Global
-  else root.QRCode = factory();
+  else QRCode = factory();
 })(this, function () {
   //---------------------------------------------------------------------
   // QRCode for JavaScript
